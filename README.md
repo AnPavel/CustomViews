@@ -1,11 +1,13 @@
-# CUSTOM VIEWS - РАЗРАБОТКА СОБСТВЕННЫХ ЭЛЕМЕНТОВ ИНТЕРФЕЙСА
+# Custom Views
 
--Custom Views
+## разработка собственных элементов интерфейса
 
--Data
+- Custom Views
 
--Attributes
+- Data
+
+- Attributes
 
 Итоги
 
-![Alt-текст](https://github.com/AnPavel/CustomViews/CustomViews.png  "Итог")
+![Итоговое изображение](https://github.com/AnPavel/CustomViews/blob/main/CustomViews.png "Итог")
