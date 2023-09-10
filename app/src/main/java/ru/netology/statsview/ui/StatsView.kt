@@ -1,20 +1,19 @@
 package ru.netology.statsview.ui
 
-import android.view.View
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.View
 import androidx.core.content.withStyledAttributes
 import ru.netology.statsview.R
 import ru.netology.statsview.utils.AndroidUtils
 import kotlin.math.min
 import kotlin.random.Random
 
-
-class StatsView @JvmOverloads constructor(
+open class StatsView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
@@ -25,9 +24,10 @@ class StatsView @JvmOverloads constructor(
     defStyleAttr,
     defStyleRes,
 ) {
+
     private var textSize = AndroidUtils.dp(context, 20).toFloat()
     private var lineWidth = AndroidUtils.dp(context, 5)
-    private var colors = emptyList<Int>()
+    var colors = emptyList<Int>()
 
     init {
         context.withStyledAttributes(attributeSet, R.styleable.StatsView) {
@@ -44,14 +44,13 @@ class StatsView @JvmOverloads constructor(
 
     var data: List<Float> = emptyList()
         set(value) {
-            field = value       //обновить данные
-            invalidate()        //вызов функции с послед вызовом onDraw
+            field = value
+            invalidate()
         }
-    private var radius = 0F
-    private var center = PointF()
-    private var oval = RectF()
-
-    private val paint = Paint(
+    var radius = 0F
+    var center = PointF()
+    var oval = RectF()
+    val paint = Paint(
         Paint.ANTI_ALIAS_FLAG
     ).apply {
         strokeWidth = lineWidth.toFloat()
@@ -59,7 +58,7 @@ class StatsView @JvmOverloads constructor(
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
     }
-    private val textPaint = Paint(
+    val textPaint = Paint(
         Paint.ANTI_ALIAS_FLAG
     ).apply {
         textSize = this@StatsView.textSize
@@ -82,27 +81,23 @@ class StatsView @JvmOverloads constructor(
         if (data.isEmpty()) {
             return
         }
-        //переменная - стартовый угол поворота
         var startAngle = -90F
-        //список элементов
         data.forEachIndexed { index, datum ->
-            //расч угол поворота каждого
-            val angle = datum * 360F
-            //цвет - случайное число от черного до белого
-            paint.color = colors.getOrElse(index) {generateRandomColor()}
-            //отрисовываем дугу
+            val angle = datum / data.sum() * 360F
+            paint.color = colors.getOrElse(index) { generateRandomColor() }
             canvas.drawArc(oval, startAngle, angle, false, paint)
             startAngle += angle
         }
+        paint.color = colors[0]
+        canvas.drawPoint(center.x, center.y - radius, paint)
 
         canvas.drawText(
-            "%.2f%%".format(data.sum() * 100),
+            "%.2f%%".format(100F),
             center.x,
             center.y + textPaint.textSize / 4,
             textPaint
         )
     }
 
-    private fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
-
+    fun generateRandomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
 }
